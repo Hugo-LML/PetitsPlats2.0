@@ -12,25 +12,47 @@
     <header class="relative flex h-screen w-full items-center justify-center">
       <img src="../public/assets/images/hero.png" alt="hero banner" class="absolute h-full w-full object-cover" />
       <img src="../public/assets/images/logo.svg" alt="logo" class="absolute left-16 top-12" />
-      <div class="relative flex max-w-4xl flex-col items-center space-y-10">
-        <h1 class="text-yellow text-center font-anton text-5xl uppercase leading-[4rem]">
+      <div class="relative flex w-full max-w-[60rem] flex-col items-center space-y-10">
+        <h1 class="text-center font-anton text-5xl uppercase leading-[4rem] text-yellow">
           Cherchez parmi plus de 1500 recettes<br />du quotidien, simples et délicieuses
         </h1>
-        <input type="text" placeholder="Rechercher une recette, un ingrédient..." class="w-full rounded-md bg-white p-2" />
+        <label for="search" class="relative w-full">
+          <input
+            type="text"
+            id="search"
+            name="search"
+            placeholder="Rechercher une recette, un ingrédient..."
+            class="h-[4.5rem] w-full rounded-xl bg-white p-2 pl-8 pr-40"
+          />
+          <button
+            id="clear-button"
+            type="button"
+            class="absolute right-20 top-1/2 hidden size-10 -translate-y-1/2 items-center justify-center"
+          >
+            <img src="../public/assets/icons/clear.svg" alt="clear icon" />
+          </button>
+          <button
+            id="search-button"
+            type="button"
+            class="absolute right-2.5 top-1/2 flex size-[3.25rem] -translate-y-1/2 items-center justify-center rounded-[0.625rem] bg-black transition-colors hover:bg-yellow"
+          >
+            <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10.4219" r="9.5" stroke="white" class="transition-colors" />
+              <line x1="18.3536" y1="19.0683" x2="27.3536" y2="28.0683" stroke="white" class="transition-colors" />
+            </svg>
+          </button>
+        </label>
       </div>
     </header>
     <main class="px-20 pb-32">
-      <nav class="mt-5 flex items-center justify-between">
-        <div class="flex items-center space-x-16">
-          <div class="h-14 w-48 rounded-xl bg-white"></div>
-          <div class="h-14 w-48 rounded-xl bg-white"></div>
-          <div class="h-14 w-48 rounded-xl bg-white"></div>
-        </div>
-        <p class="font-anton text-xl">1500 recettes</p>
+      <nav class="mt-5 flex items-start justify-between">
+        <div id="selects" class="flex items-start space-x-16"></div>
+        <p class="mt-4 font-anton text-xl">1500 recettes</p>
       </nav>
       <section id="recipes" class="mt-14 grid grid-cols-3 gap-x-12 gap-y-16"></section>
     </main>
   </body>
   <script src="./scripts/index.js"></script>
+  <script src="./scripts/templates/select.js"></script>
   <script src="./scripts/templates/recipe.js"></script>
 </html>

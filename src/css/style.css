@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#search-button:hover svg circle, #search-button:hover svg line {
+  stroke: theme('colors.black.DEFAULT');
+  transition: 0.15s;
+}

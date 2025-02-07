@@ -1,7 +1,9 @@
 function getRecipeCard(recipe) {
-  const article = document.createElement('article');
-  article.className = 'overflow-hidden rounded-[1.25rem] bg-white shadow-[0px_4px_34px_30px_rgba(0,0,0,0.04)]';
+  // Recipe card creation
+  const recipeCard = document.createElement('article');
+  recipeCard.className = 'overflow-hidden rounded-[1.25rem] bg-white shadow-[0px_4px_34px_30px_rgba(0,0,0,0.04)]';
 
+  // Recipe image creation
   const imageContainer = document.createElement('div');
   imageContainer.className = 'relative h-64 w-full';
 
@@ -17,6 +19,7 @@ function getRecipeCard(recipe) {
   imageContainer.appendChild(img);
   imageContainer.appendChild(timeBadge);
 
+  // Recipe content creation
   const content = document.createElement('div');
   content.className = 'px-6 pb-16 pt-7';
 
@@ -55,14 +58,16 @@ function getRecipeCard(recipe) {
     ingredientsList.appendChild(ingredientItem);
   });
 
+  // Add elements to recipe content
   content.appendChild(title);
   content.appendChild(recipeHeading);
   content.appendChild(description);
   content.appendChild(ingredientsHeading);
   content.appendChild(ingredientsList);
 
-  article.appendChild(imageContainer);
-  article.appendChild(content);
+  // Add elements to recipe card
+  recipeCard.appendChild(imageContainer);
+  recipeCard.appendChild(content);
 
-  return article;
+  return recipeCard;
 }
