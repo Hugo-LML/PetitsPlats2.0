@@ -1,4 +1,4 @@
-function getSelect(category, items) {
+function getSelect(category, items, recipes) {
   // Container creation
   const container = document.createElement('div');
 
@@ -63,25 +63,86 @@ function getSelect(category, items) {
 
   // List items creation
   const list = document.createElement('ul');
-  list.className = 'mt-4 h-40 overflow-y-scroll text-sm hidden';
+  list.className = 'mt-4 max-h-40 overflow-y-auto text-sm hidden';
 
   // Tags container creation
   const tagsContainer = document.createElement('div');
+  tagsContainer.id = `tags-container-${category}`;
   tagsContainer.className = 'mt-5 w-full space-y-2';
 
-  items.forEach((item) => {
-    const listItem = document.createElement('li');
-    listItem.className = 'cursor-pointer px-4 py-2.5 truncate capitalize hover:bg-yellow';
-    listItem.textContent = item;
-    
-    listItem.addEventListener('click', () => {
-      input.value = item;
-      toggleClearButton(`clear-${category}`, `search-${category}`);
-      addTag(item, tagsContainer);
-    });
+  // Update results list
+  function updateList() {
+    list.innerHTML = '';
+    const searchTerm = input.value.toLowerCase();
+    const selectedTags = [...tagsContainer.querySelectorAll('div > span')].map(tag => tag.innerHTML.toLowerCase());
 
-    list.appendChild(listItem);
-  });
+    const filteredRecipes = Array.from(document.querySelectorAll('#recipes article h2')).map(recipeName => recipeName.innerHTML.toLowerCase());
+
+    const filteredItems = items.filter(item =>
+      item.includes(searchTerm) &&
+      !selectedTags.includes(item) &&
+      filteredRecipes.some(recipeName => {
+        const recipe = recipes.find(r => r.name.toLowerCase() === recipeName);
+        if (!recipe) return false;
+
+        if (category === 'ingrédients') {
+          return recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase() === item);
+        } else if (category === 'appareils') {
+          return recipe.appliance.toLowerCase() === item;
+        } else if (category === 'ustensiles') {
+          return recipe.ustensils.some(ustensil => ustensil.toLowerCase() === item);
+        }
+        return false;
+      })
+    );
+
+    filteredItems.forEach(item => {
+        const listItem = document.createElement('li');
+        listItem.className = 'cursor-pointer px-4 py-2.5 truncate capitalize hover:bg-yellow';
+        listItem.textContent = item;
+        
+        listItem.addEventListener('click', () => {
+          input.value = item;
+          toggleClearButton(`clear-${category}`, `search-${category}`);
+          addTag(item, tagsContainer);
+          updateList();
+        });
+        
+        list.appendChild(listItem);
+      });
+  }
+
+  // Add tag to tags container
+  async function addTag(item, container) {
+    // Tag element creation
+    const tag = document.createElement('div');
+    tag.className = 'flex w-full items-center justify-between rounded-[0.625rem] bg-yellow pl-4';
+  
+    const tagText = document.createElement('span');
+    tagText.className = 'truncate text-sm capitalize';
+    tagText.textContent = item;
+  
+    const clearButton = document.createElement('button');
+    clearButton.type = 'button';
+    clearButton.className = 'flex size-12 items-center justify-center';
+  
+    const clearIcon = document.createElement('img');
+    clearIcon.src = '../public/assets/icons/clear-black.svg';
+    clearIcon.alt = 'clear icon';
+  
+    clearButton.appendChild(clearIcon);
+    clearButton.addEventListener('click', async () => {
+      tag.remove();
+      updateList();
+      filterRecipes(await getRecipes(), document.getElementById('search').value);
+    });
+  
+    tag.appendChild(tagText);
+    tag.appendChild(clearButton);
+    container.appendChild(tag);
+
+    filterRecipes(await getRecipes(), document.getElementById('search').value);
+  }
 
   // Toggle select state
   button.addEventListener('click', () => {
@@ -89,15 +150,20 @@ function getSelect(category, items) {
     searchContainer.classList.toggle('hidden', !isOpen);
     list.classList.toggle('hidden', !isOpen);
     img.classList.toggle('rotate-180', isOpen);
+    updateList();
   });
 
-  // Toggle clear button visibility on typing
-  input.addEventListener('input', () => toggleClearButton(`clear-${category}`, `search-${category}`));
+  // Update list when typing
+  input.addEventListener('input', () => {
+    toggleClearButton(`clear-${category}`, `search-${category}`);
+    updateList();
+  });
 
   // Clear input
   clearButton.addEventListener('click', () => {
     clearInput(`search-${category}`);
     toggleClearButton(`clear-${category}`, `search-${category}`);
+    updateList();
   });
 
   // Add elements to select
@@ -110,30 +176,5 @@ function getSelect(category, items) {
   container.appendChild(tagsContainer);
 
   return container;
-}
-
-function addTag(item, container) {
-  // Tag element creation
-  const tag = document.createElement('div');
-  tag.className = 'flex w-full items-center justify-between rounded-[0.625rem] bg-yellow pl-4';
-
-  const tagText = document.createElement('span');
-  tagText.className = 'truncate text-sm';
-  tagText.textContent = item;
-
-  const clearButton = document.createElement('button');
-  clearButton.type = 'button';
-  clearButton.className = 'flex size-12 items-center justify-center';
-
-  const clearIcon = document.createElement('img');
-  clearIcon.src = '../public/assets/icons/clear-black.svg';
-  clearIcon.alt = 'clear icon';
-
-  clearButton.appendChild(clearIcon);
-  clearButton.addEventListener('click', () => tag.remove());
-
-  tag.appendChild(tagText);
-  tag.appendChild(clearButton);
-  container.appendChild(tag);
 }
 
