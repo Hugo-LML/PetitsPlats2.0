@@ -81,7 +81,7 @@ function getSelect(category, items, recipes) {
     const filteredItems = items.filter(item =>
       item.includes(searchTerm) &&
       !selectedTags.includes(item) &&
-      filteredRecipes.some(recipeName => {
+      filteredRecipes.some(recipeName => { // Check if the item is present in the filtered recipes
         const recipe = recipes.find(r => r.name.toLowerCase() === recipeName);
         if (!recipe) return false;
 
@@ -97,19 +97,19 @@ function getSelect(category, items, recipes) {
     );
 
     filteredItems.forEach(item => {
-        const listItem = document.createElement('li');
-        listItem.className = 'cursor-pointer px-4 py-2.5 truncate capitalize hover:bg-yellow';
-        listItem.textContent = item;
-        
-        listItem.addEventListener('click', () => {
-          input.value = item;
-          toggleClearButton(`clear-${category}`, `search-${category}`);
-          addTag(item, tagsContainer);
-          updateList();
-        });
-        
-        list.appendChild(listItem);
+      const listItem = document.createElement('li');
+      listItem.className = 'cursor-pointer px-4 py-2.5 truncate capitalize hover:bg-yellow';
+      listItem.textContent = item;
+      
+      listItem.addEventListener('click', () => {
+        input.value = item;
+        toggleClearButton(`clear-${category}`, `search-${category}`);
+        addTag(item, tagsContainer);
+        updateList();
       });
+      
+      list.appendChild(listItem);
+    });
   }
 
   // Add tag to tags container
